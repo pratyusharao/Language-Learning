@@ -1,0 +1,413 @@
+Enter password: ***********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 12
+Server version: 8.0.33 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database LangLearn
+    -> ;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> use LangLearn
+Database changed
+mysql> create table Users(user_id int, username varchar(50),password varchar(255),email varchar(110),created_at timestamp, primary key(user_id));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> create table Languages(lang_id int,name varchar(50),description text,primary key(lang_id));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> create table Lessons(lss_id int,lang_id int,title varchar(110),content text,primary key(lss_id),foreign key (lang_id) references Languages(lang_id));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> create table Vocabulary(word_id int,lang_id int,word varchar(55),definition text,example text,primary key(word_id),foreign key (lang_id) references Languages(lang_id));
+ERROR 2013 (HY000): Lost connection to MySQL server during query
+No connection. Trying to reconnect...
+Connection id:    13
+Current database: LangLearn
+
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> create table GrammaRules(rule_id int,lang_id int,rule varchar(110),example text,primary key(rule_id),foreign key (lang_id) references Languages(lang_id));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> create table Exercises(excs_id int,lang_id int,lss_id int,title varchar(110),question text,options text,crct_optn int,primary key(excs_id),foreign key (lang_id) references Languages(lang_id),foreign key (lss_id) references Lessons(lss_id));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> create table UserProgress(pgs_id int,user_id int,lss_id int,completed boolean,score int,timestamp timestamp,primary key(pgs_id),foreign key (user_id) references Users(user_id),foreign key (lss_id) references Lessons(lss_id));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> create table Achievements(ach_id int,user_id int,name varchar(55),description text,timestamp timestamp,primary key(ach_id),foreign key (user_id) references Users(user_id));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> show tables;
++---------------------+
+| Tables_in_langlearn |
++---------------------+
+| achievements        |
+| exercises           |
+| grammarules         |
+| languages           |
+| lessons             |
+| userprogress        |
+| users               |
+| vocabulary          |
++---------------------+
+8 rows in set (0.04 sec)
+mysql> insert into Users values
+    -> (1, 'anya_varma', 'h_pwd_123', 'anyav@gmail.com', '2023-01-01 12:00:00'),
+    -> (2, 'raj_patel', 'h_pwd_456', 'rjpatel@gmail.com', '2023-01-02 14:30:00'),
+    -> (3, 'neha_sharma', 'h_pwd_789', 'ns45@gmail.com', '2023-01-03 09:45:00'),
+    -> (4, 'arjun_mehra', 'h_pwd_abc', 'amehra78@gmail.com', '2023-01-04 17:20:00'),
+    -> (5, 'priya_ramesh', 'h_pwd_def', 'prm34@gmail.com', '2023-01-05 13:10:01');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from Users;
++---------+--------------+-----------+--------------------+---------------------+
+| user_id | username     | password  | email              | created_at          |
++---------+--------------+-----------+--------------------+---------------------+
+|       1 | anya_varma   | h_pwd_123 | anyav@gmail.com    | 2023-01-01 12:00:00 |
+|       2 | raj_patel    | h_pwd_456 | rjpatel@gmail.com  | 2023-01-02 14:30:00 |
+|       3 | neha_sharma  | h_pwd_789 | ns45@gmail.com     | 2023-01-03 09:45:00 |
+|       4 | arjun_mehra  | h_pwd_abc | amehra78@gmail.com | 2023-01-04 17:20:00 |
+|       5 | priya_ramesh | h_pwd_def | prm34@gmail.com    | 2023-01-05 13:10:01 |
++---------+--------------+-----------+--------------------+---------------------+
+5 rows in set (0.00 sec)
+mysql> insert into Languages values
+    -> (1,'Hindi','Widely spoken language'),
+    -> (2,'Kannada','Dravidian language spoken in Karnataka'),
+    -> (3,'Marathi','Indo-Aryan language spoken in Maharashtra'),
+    -> (4,'Tamil','Dravidian language spoken in Tamil Nadu'),
+    -> (5,'Telgu','Dravidian language spoken in Andhra Pradesh and Telangana');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from Languages;
++---------+---------+-----------------------------------------------------------+
+| lang_id | name    | description                                               |
++---------+---------+-----------------------------------------------------------+
+|       1 | Hindi   | Widely spoken language                                    |
+|       2 | Kannada | Dravidian language spoken in Karnataka                    |
+|       3 | Marathi | Indo-Aryan language spoken in Maharashtra                 |
+|       4 | Tamil   | Dravidian language spoken in Tamil Nadu                   |
+|       5 | Telgu   | Dravidian language spoken in Andhra Pradesh and Telangana |
++---------+---------+-----------------------------------------------------------+
+5 rows in set (0.00 sec)
+mysql> insert into Lessons values
+    -> (1,1,'Greetings','learn common greetings in Hindi'),
+    -> (2,1,'Numbers','learn numbers in Hindi'),
+    -> (3,2,'ಸಂಖ್ಯೆಗಳು','learn numbers in Kannada'),
+    -> (4,3,'नमस्ते','greetings in Marathi'),
+    -> (5,4,'எண்கள்','learn numbers in Tamil'),
+    -> (6,5,'సంఖ్యలు','learn numbers in Telgu');
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> select * from Lessons;
++--------+---------+-----------+---------------------------------+
+| lss_id | lang_id | title     | content                         |
++--------+---------+-----------+---------------------------------+
+|      1 |       1 | Greetings | learn common greetings in Hindi |
+|      2 |       1 | Numbers   | learn numbers in Hindi          |
+|      3 |       2 | ????????? | learn numbers in Kannada        |
+|      4 |       3 | ??????    | greetings in Marathi            |
+|      5 |       4 | ??????    | learn numbers in Tamil          |
+|      6 |       5 | ???????   | learn numbers in Telgu          |
++--------+---------+-----------+---------------------------------+
+6 rows in set (0.00 sec)
+mysql> insert into Vocabulary values
+    -> (1,1,'संगणक','Hindi word for "Computer',' मेरा संगणक बहुत तेज़ है। (My computer is very fast.)'),
+    -> (2,2,'ಕುಟುಂಬ','Kannada word for Family','ನಾನು ನನ್ನ ಕುಟುಂಬದೊಡನೆ ಇರುವುದು ಇಷ್ಟವಿದೆ. (I enjoy being with my family.)'),
+    -> (3,3,'बसा','Marathi word for sit',' कृपया बसा. (Please sit.)'),
+    -> (4,4,'உச்சிகூட','Tamil word for chair',' அந்நியச் செயலாளர் உச்சிகூடத்தில் உள்ளார். (The foreign employee is sitting on the chair.)'),
+    -> (5,5,'పఠించు','Telgu word for Study',' రాత్రి పఠించుకోవడానికి ఒక అవసరం. (There is an opportunity to study at night.)');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from Vocabulary;
++---------+---------+----------+--------------------------+--------------------------------------------------------------------------------------------+
+| word_id | lang_id | word     | definition               | example                                                                                    |
++---------+---------+----------+--------------------------+--------------------------------------------------------------------------------------------+
+|       1 |       1 | ?????    | Hindi word for "Computer |  ???? ????? ???? ???? ??? (My computer is very fast.)                                      |
+|       2 |       2 | ??????   | Kannada word for Family  | ???? ???? ??????????? ??????? ????????. (I enjoy being with my family.)                    |
+|       3 |       3 | ???      | Marathi word for sit     |  ????? ???. (Please sit.)                                                                  |
+|       4 |       4 | ???????? | Tamil word for chair     |  ???????? ???????? ?????????????? ???????. (The foreign employee is sitting on the chair.) |
+|       5 |       5 | ??????   | Telgu word for Study     |  ?????? ??????????????? ?? ?????. (There is an opportunity to study at night.)             |
++---------+---------+----------+--------------------------+--------------------------------------------------------------------------------------------+
+5 rows in set (0.00 sec)
+mysql> insert into Exercises values
+    -> (1,1,1,'Greetings exercise','What is the common greeting in Hindi?','a) नमस्ते, b) आप कैसे हैं,c) हाय',1),
+    -> (2,2,3,'Kannada Numbers','What is 10 in Kannada?','a)ಒಂಭತ್ತು,b)ಹತ್ತು,c)ಹತ್ತು',1),
+    ->  (3,3,4,'Greetings in Marathi','What is the common greeting in Marathi?','a) नमस्ते,b) आपले नाव काय आहे?,c)नमस्कार',1);
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from Exercises;
++---------+---------+--------+----------------------+-----------------------------------------+------------------------------------------+-----------+
+| excs_id | lang_id | lss_id | title                | question                                | options                                  | crct_optn |
++---------+---------+--------+----------------------+-----------------------------------------+------------------------------------------+-----------+
+|       1 |       1 |      1 | Greetings exercise   | What is the common greeting in Hindi?   | a) ??????, b) ?? ???? ???,c) ???         |         1 |
+|       2 |       2 |      3 | Kannada Numbers      | What is 10 in Kannada?                  | a)???????,b)?????,c)?????                |         1 |
+|       3 |       3 |      4 | Greetings in Marathi | What is the common greeting in Marathi? | a) ??????,b) ???? ??? ??? ????,c)??????? |         1 |
++---------+---------+--------+----------------------+-----------------------------------------+------------------------------------------+-----------+
+3 rows in set (0.00 sec)
+mysql> insert into Achievements values
+    -> (1,1,'Vocabulary Master','Learned 50 new words in a single session','2023-02-10 15:45:00'),
+    -> (2,2,'Beginner Language Learner','Completed the first set of language lessons','2023-02-01 09:30:00'),
+    -> (3,5,'Multilingual Explorer','Reached higher levels in Hindi and Kannada','2023-03-05 14:20:00');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from Achievements;
++--------+---------+---------------------------+---------------------------------------------+---------------------+
+| ach_id | user_id | name                      | description                                 | timestamp           |
++--------+---------+---------------------------+---------------------------------------------+---------------------+
+|      1 |       1 | Vocabulary Master         | Learned 50 new words in a single session    | 2023-02-10 15:45:00 |
+|      2 |       2 | Beginner Language Learner | Completed the first set of language lessons | 2023-02-01 09:30:00 |
+|      3 |       5 | Multilingual Explorer     | Reached higher levels in Hindi and Kannada  | 2023-03-05 14:20:00 |
++--------+---------+---------------------------+---------------------------------------------+---------------------+
+3 rows in set (0.00 sec)
+mysql> insert into UserProgress values
+    -> (1,1,1,1,90,'2023-02-01 09:45:00'),
+    -> (2,2,1,1,80,'2023-02-02 10:30:00'),
+    -> (3,3,2,1,75,'2023-02-05 11:35:00'),
+    -> (4,4,3,1,66,'2023-02-08 09:40:00'),
+    -> (5,5,3,1,95,'2023-02-15 08:15:00');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from UserProgress;
++--------+---------+--------+-----------+-------+---------------------+
+| pgs_id | user_id | lss_id | completed | score | timestamp           |
++--------+---------+--------+-----------+-------+---------------------+
+|      1 |       1 |      1 |         1 |    90 | 2023-02-01 09:45:00 |
+|      2 |       2 |      1 |         1 |    80 | 2023-02-02 10:30:00 |
+|      3 |       3 |      2 |         1 |    75 | 2023-02-05 11:35:00 |
+|      4 |       4 |      3 |         1 |    66 | 2023-02-08 09:40:00 |
+|      5 |       5 |      3 |         1 |    95 | 2023-02-15 08:15:00 |
++--------+---------+--------+-----------+-------+---------------------+
+5 rows in set (0.00 sec)
+mysql> insert into Grammarules values
+    -> (1,1,'Noun-Verb Agreement',' Sheela बहुत अच्छी हैं. (Sheela is very good.)'),
+    -> (2,2,'Present Tense Forms','ನಾನು ಊಟ ಮಾಡುತ್ತಿದ್ದೇನೆ. (I am having lunch.)'),
+    -> (3,3,'Direct Speech','सोनिआ म्हणाली, "मला पुस्तक वाचायची आहे(Sonia said, "I want to read a book.")'),
+    -> (4,4,'Case in Nouns','அவன் வீடுக்கு செல்ல விரும்பினான். (He wants to go home.)'),
+    -> (5,5,'Indirect Speech','రాము పల్లకి వెళ్ళిపోయాడు, "నాన్నా, పెద్ద చెత్త తీసుకొచ్చాను." అని చెప్పాడు(Ramu went to the market and told his father that he had bought a big umbrella.)');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from Grammarules;
++---------+---------+---------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| rule_id | lang_id | rule                | example                                                                                                                                                    |
++---------+---------+---------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|       1 |       1 | Noun-Verb Agreement |  Sheela ???? ????? ???. (Sheela is very good.)                                                                                                             |
+|       2 |       2 | Present Tense Forms | ???? ?? ??????????????. (I am having lunch.)                                                                                                               |
+|       3 |       3 | Direct Speech       | ????? ???????, "??? ?????? ??????? ???(Sonia said, "I want to read a book.")                                                                               |
+|       4 |       4 | Case in Nouns       | ???? ???????? ????? ????????????. (He wants to go home.)                                                                                                   |
+|       5 |       5 | Indirect Speech     | ???? ?????? ????????????, "??????, ????? ????? ????????????." ??? ????????(Ramu went to the market and told his father that he had bought a big umbrella.) |
++---------+---------+---------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------+
+5 rows in set (0.00 sec)
+
+mysql> update Users set email ='anyavma@yahoo.com' where user_id=1;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from Users;
++---------+--------------+-----------+--------------------+---------------------+
+| user_id | username     | password  | email              | created_at          |
++---------+--------------+-----------+--------------------+---------------------+
+|       1 | anya_varma   | h_pwd_123 | anyavma@yahoo.com  | 2023-01-01 12:00:00 |
+|       2 | raj_patel    | h_pwd_456 | rjpatel@gmail.com  | 2023-01-02 14:30:00 |
+|       3 | neha_sharma  | h_pwd_789 | ns45@gmail.com     | 2023-01-03 09:45:00 |
+|       4 | arjun_mehra  | h_pwd_abc | amehra78@gmail.com | 2023-01-04 17:20:00 |
+|       5 | priya_ramesh | h_pwd_def | prm34@gmail.com    | 2023-01-05 13:10:01 |
++---------+--------------+-----------+--------------------+---------------------+
+5 rows in set (0.00 sec)
+
+mysql> create trigger log_userprogress_update
+    -> after update on UserProgress
+    -> for each row
+    -> begin
+    ->     insert into UserProgress_log (user_id, action_type, timestamp)
+    ->     values (new.user_id, 'update', now());
+    -> end;
+    -> //
+Query OK, 0 rows affected (0.01 sec)
+mysql> select name, (
+    ->     select count(*)
+    ->     from Grammarules
+    ->     where Grammarules.lang_id = Languages.lang_id
+    -> ) AS total_grammar_rules
+    -> from Languages;
++---------+---------------------+
+| name    | total_grammar_rules |
++---------+---------------------+
+| Hindi   |                   1 |
+| Kannada |                   1 |
+| Marathi |                   1 |
+| Tamil   |                   1 |
+| Telgu   |                   1 |
++---------+---------------------+
+5 rows in set (0.00 sec)
+mysql> select up.user_id, up.lss_id, up.completed, up.score, up.timestamp,
+    ->        e.title AS exercise_title, e.question, e.options, e.crct_optn
+    -> from UserProgress up
+    -> left join exercises e on up.lss_id = e.lss_id;
++---------+--------+-----------+-------+---------------------+--------------------+---------------------------------------+----------------------------------+-----------+
+| user_id | lss_id | completed | score | timestamp           | exercise_title     | question                              | options                          | crct_optn |
++---------+--------+-----------+-------+---------------------+--------------------+---------------------------------------+----------------------------------+-----------+
+|       1 |      1 |         1 |    90 | 2023-02-01 09:45:00 | Greetings exercise | What is the common greeting in Hindi? | a) ??????, b) ?? ???? ???,c) ??? |         1 |
+|       2 |      1 |         1 |    80 | 2023-02-02 10:30:00 | Greetings exercise | What is the common greeting in Hindi? | a) ??????, b) ?? ???? ???,c) ??? |         1 |
+|       3 |      2 |         1 |    75 | 2023-02-05 11:35:00 | NULL               | NULL                                  | NULL                             |      NULL |
+|       4 |      3 |         1 |    66 | 2023-02-08 09:40:00 | Kannada Numbers    | What is 10 in Kannada?                | a)???????,b)?????,c)?????        |         1 |
+|       5 |      3 |         1 |    95 | 2023-02-15 08:15:00 | Kannada Numbers    | What is 10 in Kannada?                | a)???????,b)?????,c)?????        |         1 |
++---------+--------+-----------+-------+---------------------+--------------------+---------------------------------------+----------------------------------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> select up.user_id, avg(up.score) as average_score, count(distinct a.ach_id) AS total_achievements
+    -> from UserProgress up
+    -> left join achievements a on up.user_id = a.user_id
+    -> group by up.user_id;
++---------+---------------+--------------------+
+| user_id | average_score | total_achievements |
++---------+---------------+--------------------+
+|       1 |       90.0000 |                  1 |
+|       2 |       80.0000 |                  1 |
+|       3 |       75.0000 |                  0 |
+|       4 |       66.0000 |                  0 |
+|       5 |       95.0000 |                  1 |
++---------+---------------+--------------------+
+5 rows in set (0.00 sec)
+mysql> delete from Lessons
+    -> where lss_id=6;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from lessons;
++--------+---------+-----------+---------------------------------+
+| lss_id | lang_id | title     | content                         |
++--------+---------+-----------+---------------------------------+
+|      1 |       1 | Greetings | learn common greetings in Hindi |
+|      2 |       1 | Numbers   | learn numbers in Hindi          |
+|      3 |       2 | ????????? | learn numbers in Kannada        |
+|      4 |       3 | ??????    | greetings in Marathi            |
+|      5 |       4 | ??????    | learn numbers in Tamil          |
++--------+---------+-----------+---------------------------------+
+5 rows in set (0.00 sec)
+mysql> create role Admin;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> create role Instructor;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create role User;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> grant all privileges on LangLearn.* to Admin;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>  show grants for Admin;
++------------------------------------------------------+
+| Grants for Admin@%                                   |
++------------------------------------------------------+
+| GRANT USAGE ON *.* TO `Admin`@`%`                    |
+| GRANT ALL PRIVILEGES ON `langlearn`.* TO `Admin`@`%` |
++------------------------------------------------------+
+2 rows in set (0.00 sec)mysql> grant select,insert,update,delete on Lessons to Instructor;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> show grants for Instructor;
++-----------------------------------------------------------------------------------+
+| Grants for Instructor@%                                                           |
++-----------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO `Instructor`@`%`                                            |
+| GRANT SELECT, INSERT, UPDATE, DELETE ON `langlearn`.`lessons` TO `Instructor`@`%` |
++-----------------------------------------------------------------------------------+
+2 rows in set (0.00 sec)
+mysql> show grants for Instructor;
++-----------------------------------------------------------------------------------+
+| Grants for Instructor@%                                                           |
++-----------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO `Instructor`@`%`                                            |
+| GRANT SELECT, INSERT, UPDATE, DELETE ON `langlearn`.`lessons` TO `Instructor`@`%` |
++-----------------------------------------------------------------------------------+
+2 rows in set (0.00 sec)
+
+mysql>  grant select,insert,update,delete on Vocabulary to Instructor;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> show grants for Instructor;
++--------------------------------------------------------------------------------------+
+| Grants for Instructor@%                                                              |
++--------------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO `Instructor`@`%`                                               |
+| GRANT SELECT, INSERT, UPDATE, DELETE ON `langlearn`.`lessons` TO `Instructor`@`%`    |
+| GRANT SELECT, INSERT, UPDATE, DELETE ON `langlearn`.`vocabulary` TO `Instructor`@`%` |
++--------------------------------------------------------------------------------------+
+3 rows in set (0.00 sec)
+mysql> grant select on Lessons to User;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> grant select on Vocabulary to User;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> grant select on UserProgress to User;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> grant select on Achievements to User;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> show grants for User;
++----------------------------------------------------------+
+| Grants for User@%                                        |
++----------------------------------------------------------+
+| GRANT USAGE ON *.* TO `User`@`%`                         |
+| GRANT SELECT ON `langlearn`.`achievements` TO `User`@`%` |
+| GRANT SELECT ON `langlearn`.`lessons` TO `User`@`%`      |
+| GRANT SELECT ON `langlearn`.`userprogress` TO `User`@`%` |
+| GRANT SELECT ON `langlearn`.`vocabulary` TO `User`@`%`   |
++----------------------------------------------------------+
+5 rows in set (0.00 sec)
+mysql> CREATE FUNCTION GetUserDetails(userId INT)
+    -> RETURNS VARCHAR(255)
+    -> DETERMINISTIC
+    -> BEGIN
+    ->     DECLARE result VARCHAR(255);
+    ->
+    ->     SELECT
+    ->         CONCAT('User: ', u.username,
+    ->                '\nCompleted Lessons: ', GROUP_CONCAT(l.title SEPARATOR ', '),
+    ->                '\nAchievements: ', GROUP_CONCAT(a.name SEPARATOR ', ')
+    ->         ) INTO result
+    ->     FROM Users u
+    ->     LEFT JOIN UserProgress up ON u.user_id = up.user_id
+    ->     LEFT JOIN Lessons l ON up.lss_id = l.lss_id
+    ->     LEFT JOIN Achievements a ON u.user_id = a.user_id
+    ->     WHERE u.user_id = userId
+    ->     GROUP BY u.user_id; -- Include all non-aggregated columns in GROUP BY
+    ->
+    ->     IF result IS NULL THEN
+    ->         SET result = 'User not found';
+    ->     END IF;
+    ->
+    ->     -- Ensure the result is treated as VARCHAR
+    ->     SET result = CAST(result AS CHAR);
+    ->
+    ->     RETURN result;
+    -> END //
+Query OK, 0 rows affected (0.01 sec)
+mysql> select GetUserDetails(2);
++--------------------------------------------------------------------------------------+
+| GetUserDetails(2)                                                                    |
++--------------------------------------------------------------------------------------+
+| User: raj_patel
+Completed Lessons: Greetings
+Achievements: Beginner Language Learner |
++--------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
